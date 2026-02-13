@@ -30,12 +30,7 @@ jobs:
 
       - name: Run MWE (loop)
         shell: bash
+        env:
+          N_ITERATIONS: 100
         run: |
-          set -euo pipefail
-          N=${N_ITERATIONS:-100}
-          for i in $(seq 1 "$N"); do
-            echo "::group::Iteration $i/$N"
-            echo "iteration=$i"
-            julia --project=. run.jl
-            echo "::endgroup::"
-          done
+          julia --project=. run_loop.jl
