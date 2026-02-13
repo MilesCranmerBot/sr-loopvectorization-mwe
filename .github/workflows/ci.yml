@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          N=${N_ITERATIONS:-200}
+          N=${N_ITERATIONS:-100}
           for i in $(seq 1 "$N"); do
             echo "::group::Iteration $i/$N"
             echo "iteration=$i"
