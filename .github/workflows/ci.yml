@@ -28,7 +28,14 @@ jobs:
             Pkg.precompile()
           '
 
-      - name: Run MWE
+      - name: Run MWE (loop)
         shell: bash
         run: |
-          julia --project=. run.jl
+          set -euo pipefail
+          N=${N_ITERATIONS:-200}
+          for i in $(seq 1 "$N"); do
+            echo "::group::Iteration $i/$N"
+            echo "iteration=$i"
+            julia --project=. run.jl
+            echo "::endgroup::"
+          done

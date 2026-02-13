@@ -38,10 +38,10 @@ function test_mixed(i, batching::Bool, weighted::Bool, parallelism)
         T = Float16
     elseif i == 5
         T = Float64
+        # Force the LoopVectorization "turbo" evaluation path on,
+        # even on Linux + Julia < 1.11 (this is the configuration that is
+        # suspected to intermittently trigger the LLVM abort).
         turbo = true
-        @static if VERSION < v"1.11" && Sys.islinux()
-            turbo = false
-        end
     end
 
     numprocs = parallelism == :multiprocessing ? 2 : nothing
@@ -52,6 +52,7 @@ function test_mixed(i, batching::Bool, weighted::Bool, parallelism)
             batching=batching,
             parsimony=0.0f0, # Required for scoring
             early_stop_condition=1e-6,
+            turbo=turbo,
         )
     else
         SymbolicRegression.Options(;
