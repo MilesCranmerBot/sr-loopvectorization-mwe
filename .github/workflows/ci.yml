@@ -1,0 +1,34 @@
+name: mwe
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          julia -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.add(PackageSpec(url="https://github.com/MilesCranmerBot/SymbolicRegression.jl", rev="backport-pr542-release-v1"))
+            Pkg.add(["LoopVectorization", "Bumper"])
+            Pkg.precompile()
+          '
+
+      - name: Run MWE
+        shell: bash
+        run: |
+          julia --project=. run.jl
