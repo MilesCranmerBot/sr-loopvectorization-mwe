@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +36,7 @@ jobs:
       - name: Run MWE (loop)
         shell: bash
         env:
-          N_ITERATIONS: 100
+          N_ITERATIONS: 25
+          SHARD: ${{ matrix.shard }}
         run: |
           julia --project=. run_loop.jl
